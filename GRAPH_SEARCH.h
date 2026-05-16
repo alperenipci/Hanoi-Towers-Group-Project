@@ -1,15 +1,15 @@
-#ifndef TREE_SERACH_H
-#define TREE_SERACH_H
+#ifndef GRAPH_SEARCH_H
+#define GRAPH_SEARCH_H
 
 #include "data_types.h"
 
 // ==================== WRITE YOUR OPTIONAL COMMANDS ===========================
-#define CITY_NUMBER  20
+#define PEG_NUMBER  3
 
 // ========  YOUR COMPULSORY (BUT SPECIFIC TO THE PROBLEM) COMMANDS ============ 
 #define PREDETERMINED_GOAL_STATE  1 // User will initially determine the goal state if it is true (1)
-#define ACTIONS_NUMBER  20          // The number of all possible actions
-#define MAX_SEARCHED_NODE 100000000 // exit from the search process if it is exceeded  
+#define ACTION_COUNT  6          // The number of possible Tower of Hanoi moves
+#define MAX_SEARCHED_NODE 20000000 // exit from the search process if it is exceeded  
 
 // ================== YOU DO NOT NEED TO CHANGE THIS PART ======================
 #define NO_ACTION  0

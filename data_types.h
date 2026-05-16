@@ -1,41 +1,31 @@
 #ifndef DATA_TYPES_H
 #define DATA_TYPES_H
 
-// ==================== WRITE YOUR OPTIONAL DATA TYPES IF YOU NEED =============
-
-enum CITIES 
-{
-	Arad,    Bucharest, Craiova,  Drobeta, Eforie,
-	Fagaras, Giurgiu,   Hirsova,  Iasi,    Lugoj,
-	Mehadia, Neamt,     Oradea,   Pitesti, Rimnicu_Vilcea,
-	Sibiu,   Timisoara, Urziceni, Vaslui,  Zerind
-};
-
+#define MAX_DISKS 9
 
 // ====== WRITE YOUR COMPULSORY (BUT SPECIFIC TO THE PROBLEM) DATA TYPES =======
 
-enum ACTIONS // All possible actions
+enum ACTIONS // All possible actions for Tower of Hanoi
 {
-	Go_Arad,    Go_Bucharest, Go_Craiova,  Go_Drobeta, Go_Eforie,
-	Go_Fagaras, Go_Giurgiu,   Go_Hirsova,  Go_Iasi,    Go_Lugoj,
-	Go_Mehadia, Go_Neamt,     Go_Oradea,   Go_Pitesti, Go_Rimnicu_Vilcea,
-	Go_Sibiu,   Go_Timisoara, Go_Urziceni, Go_Vaslui,  Go_Zerind
+    Move_A_B, Move_A_C,
+    Move_B_A, Move_B_C,
+    Move_C_A, Move_C_B
 };
 
-typedef struct State  
+typedef struct State
 {
-    enum CITIES city;
-    float h_n;   // Heuristic function
-      
-}State;
+    int num_disks;
+    int disk[MAX_DISKS]; // disk[i] = peg index of disk i (0 = A, 1 = B, 2 = C)
+    float h_n;          // Heuristic estimate to goal
+} State;
 
 // ================== YOU DO NOT NEED TO CHANGE THIS PART ======================
 
 enum METHODS
 {
-	BreastFirstSearch = 1,   UniformCostSearch = 2,        DepthFirstSearch = 3,    
-	DepthLimitedSearch= 4,   IterativeDeepeningSearch = 5, GreedySearch = 6,
-    AStarSearch = 7, GeneralizedAStarSearch = 8  
+    BreastFirstSearch = 1,   UniformCostSearch = 2,        DepthFirstSearch = 3,
+    DepthLimitedSearch = 4,   IterativeDeepeningSearch = 5, GreedySearch = 6,
+    AStarSearch = 7, GeneralizedAStarSearch = 8
 };
 
 // This struct is used to determine a new state and action in transition model

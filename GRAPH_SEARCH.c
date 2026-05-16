@@ -4,7 +4,7 @@
 #include "data_types.h"
 
 int main()
-{	
+{ 	
     Node root, *goal;
     State *goal_state = NULL;
     enum METHODS method;
@@ -83,4 +83,3 @@ int main()
   	
     return 0;
 }
-

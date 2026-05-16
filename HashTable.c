@@ -9,29 +9,22 @@
 
 
 
+
 // =========  YOUR COMPULSORY (BUT SPECIFIC TO THE PROBLEM) FUNCTIONS =======
 
-//___________________ Create unique char key for each state______________________
+//___________________ Create unique char key for each state____________________
 void Generate_HashTable_Key(const State *const state, unsigned char* key) 
 {
-	int temp_city = state->city, i=0;
-	
-	if(temp_city == 0){
-		key[0] = '0';
-		key[1] = '\0';
-	}
-	else{
-		for(i=0; temp_city>0; i++){
-			key[i] = temp_city%10 + '0';
-			temp_city /= 10;
-		}
-		key[i] = '\0';
-	}
-		
-	if(i>MAX_KEY_SIZE){
-		printf("ERROR: MAX_KEY_SIZE is exceeded in Generate_HashTable_Key. \n");
-		exit(-1);
-	}   
+    int i;
+    for(i = 0; i < state->num_disks; i++){
+        key[i] = (unsigned char)('0' + state->disk[i]);
+    }
+    key[state->num_disks] = '\0';
+
+    if(state->num_disks + 1 > MAX_KEY_SIZE){
+        printf("ERROR: MAX_KEY_SIZE is exceeded in Generate_HashTable_Key. \n");
+        exit(-1);
+    }
 }
 
 
@@ -48,7 +41,7 @@ static int is_prime(const unsigned int x) {
 		if(x%i==0)
 			return FALSE;
 	}	
-	
+
 	return TRUE; 	   
 }
 
@@ -62,16 +55,14 @@ static unsigned next_prime(unsigned int x) {
 
 //___________________ Hash Function __________________________________
 static unsigned int hash_func(const char* key, const int size) {
-    unsigned int hash = 0, i;
-    // a should be a prime number larger than the size of the alphabet
-    const int a = 151; 
+    unsigned int hash = 0;
+    const int a = 151;
     const int length_key = strlen(key);
-    
-    for (i = 0; i < length_key; i++){
-    	hash += (unsigned int)pow(a, length_key - (i+1)) * key[i];
-    	hash = hash % size;
-	} 
-	  
+
+    for (int i = 0; i < length_key; i++){
+        hash = (hash * a + (unsigned char)key[i]) % size;
+    }
+
     return hash;
 }
 
@@ -112,7 +103,7 @@ void ht_insert_key(Hash_Table *ht, const char *key) {
     
     if(ht->size==ht->count){
     	printf("ERROR: Hash table is full.\n");
-		exit(-1);	
+		exit(-1); 	
 	}	
 	
 	index = hash_func(key, ht->size);
@@ -121,12 +112,12 @@ void ht_insert_key(Hash_Table *ht, const char *key) {
     		index = 0; 
     	else
 		    index++;
-    } 
+    }
     
-    ht->State_Key[index] = (unsigned char*)malloc(MAX_KEY_SIZE*sizeof(unsigned char*));
+    ht->State_Key[index] = (unsigned char*)malloc((strlen(key) + 1) * sizeof(unsigned char));
     if(ht->State_Key[index]==NULL)
         Warning_Memory_Allocation();
-    strcpy(ht->State_Key[index], key);
+    strcpy((char*)ht->State_Key[index], (const char*)key);
     ht->count++;
 }
 
@@ -149,7 +140,7 @@ int ht_search(Hash_Table *ht, const State *const state) {
     		index = 0; 
     	else
 		    index++;
-		    
+	    
 		if(index==first_index)
 		   return FALSE;	    
     } 
