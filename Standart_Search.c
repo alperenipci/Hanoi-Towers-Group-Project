@@ -11,7 +11,7 @@
 #include <string.h>
 #include "GRAPH_SEARCH.h"
 #include "data_types.h"
-#include "hashTable.h"
+#include "HashTable.h"
 
 //______________________________________________________________________________
 Node* First_InsertFrontier_Search_TREE(const enum METHODS method, Node *const root, State *const goal_state, float alpha)
@@ -82,8 +82,18 @@ Node* First_InsertFrontier_Search_TREE(const enum METHODS method, Node *const ro
                         child->state.h_n = Compute_Heuristic_Function(&(child->state), goal_state);
                         Insert_Priority_Queue_A_Star(child, &frontier); break; 
 				case GeneralizedAStarSearch:
-					// Generalized A* not implemented yet here
-					break;
+                    child->state.h_n = Compute_Heuristic_Function(&(child->state), goal_state);
+                    if(temp_node!=NULL){
+                        float child_f = child->path_cost + (alpha * child->state.h_n);
+                        float temp_f = temp_node->path_cost + (alpha * temp_node->state.h_n);
+                        
+                        if(child_f < temp_f) 
+                            Remove_Node_From_Frontier(temp_node, &frontier);	
+                        else 
+                            continue;	
+                    } 
+                    Insert_Priority_Queue_GENERALIZED_A_Star(child, &frontier, alpha); 
+                    break;
                     default:
                         printf("ERROR: Unknown method in First_InsertFrontier_Search_TREE.\n");
 					Delete_Hash_Table(explorer_set);  
@@ -454,9 +464,39 @@ void Insert_Priority_Queue_A_Star(Node *const child, Queue **frontier)
 //______________________________________________________________________________
 void Insert_Priority_Queue_GENERALIZED_A_Star(Node *const child, Queue **frontier, float alpha) 
 {  
-    // UPDATE THIS FUNCTION FOR HE GENERALIZED A* ALGORITHM
-    
-    return;
+    Queue *temp_queue;  
+    Queue *new_queue = (Queue*)malloc(sizeof(Queue));
+    if(new_queue==NULL)
+        Warning_Memory_Allocation(); 
+        
+    new_queue->node = child;
+     
+    if(Empty(*frontier)){
+        new_queue->next = NULL;                 
+        *frontier = new_queue; 
+    }
+    else{ 
+        float child_f = child->path_cost + (alpha * child->state.h_n);
+        float first_frontier_f = (*frontier)->node->path_cost + (alpha * (*frontier)->node->state.h_n);
+
+        if(child_f < first_frontier_f) { 
+            new_queue->next = *frontier;
+            *frontier = new_queue; 
+        }
+        else{
+            for(temp_queue = *frontier; temp_queue->next != NULL; temp_queue = temp_queue->next){
+                float next_frontier_f = temp_queue->next->node->path_cost + (alpha * temp_queue->next->node->state.h_n);
+                
+                if(child_f < next_frontier_f){ 
+                     new_queue->next = temp_queue->next;   
+                     temp_queue->next = new_queue;
+                     return;
+                }                                              
+            } 
+            temp_queue->next = new_queue;  
+            new_queue->next = NULL;                       
+        } 		
+    }      
 }
 //______________________________________________________________________________
 void Print_Frontier(Queue *const frontier)
