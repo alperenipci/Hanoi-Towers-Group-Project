@@ -321,3 +321,289 @@ Node* Pop(Queue **frontier)
 }
 
 //... (file long, truncated for brevity)
+void Insert_FIFO(Node *const child, Queue **frontier) 
+{  
+    Queue *temp_queue;  
+    Queue *new_queue = (Queue*)malloc(sizeof(Queue));
+    if(new_queue==NULL)
+    	Warning_Memory_Allocation(); 
+
+	new_queue->node = child;
+	new_queue->next = NULL;
+	 
+    if(Empty(*frontier))
+	 	*frontier = new_queue; 
+	else{ // If frontier is not empty, find the last element of the queue.  
+		for(temp_queue = *frontier; temp_queue->next!= NULL; temp_queue = temp_queue->next);
+	    temp_queue->next = new_queue;		
+	}   
+}
+
+//______________________________________________________________________________
+void Insert_LIFO(Node *const child, Queue **frontier) 
+{  
+    Queue *new_queue = (Queue*)malloc(sizeof(Queue));
+    if(new_queue==NULL)
+        Warning_Memory_Allocation(); 
+
+	new_queue->node = child;
+	new_queue->next = *frontier;
+	*frontier = new_queue;   
+}
+
+
+//______________________________________________________________________________
+void Insert_Priority_Queue_UniformSearch(Node *const child, Queue **frontier) 
+{  
+    Queue *temp_queue;  
+    Queue *new_queue = (Queue*)malloc(sizeof(Queue));
+    if(new_queue==NULL)
+        Warning_Memory_Allocation(); 
+        
+	new_queue->node = child;
+	 
+    if(Empty(*frontier)){
+         new_queue->next = NULL;                 
+	 	*frontier = new_queue; 
+    }
+	else{ // If frontier is not empty, find appropriate element according to ordered cost. 
+	    if(child->path_cost<(*frontier)->node->path_cost){ // Child has lowest cost
+	        new_queue->next = *frontier;
+            *frontier = new_queue; 
+        }
+        else{
+            for(temp_queue = *frontier; temp_queue->next != NULL; temp_queue = temp_queue->next){
+                if(child->path_cost<temp_queue->next->node->path_cost){ 
+                    new_queue->next = temp_queue->next;   
+                    temp_queue->next = new_queue;
+                    return;
+                }                                              
+            } //If child has highest cost
+            temp_queue->next = new_queue;  
+            new_queue->next = NULL;                       
+        } 		
+	}   
+}
+
+//______________________________________________________________________________
+void Insert_Priority_Queue_GreedySearch(Node *const child, Queue **frontier) 
+{  
+    Queue *temp_queue;  
+    Queue *new_queue = (Queue*)malloc(sizeof(Queue));
+    if(new_queue==NULL)
+        Warning_Memory_Allocation(); 
+        
+	new_queue->node = child;
+	 
+    if(Empty(*frontier)){
+         new_queue->next = NULL;                 
+	 	*frontier = new_queue; 
+    }
+	else{ // If frontier is not empty, find appropriate element according to ordered cost. 
+	    if(child->state.h_n < (*frontier)->node->state.h_n){ // Child has lowest cost
+	        new_queue->next = *frontier;
+            *frontier = new_queue; 
+        }
+        else{
+            for(temp_queue = *frontier; temp_queue->next != NULL; temp_queue = temp_queue->next){
+                if(child->state.h_n < temp_queue->next->node->state.h_n){ 
+                     new_queue->next = temp_queue->next;   
+                     temp_queue->next = new_queue;
+                     return;
+                }                                              
+            } //If child has highest cost
+            temp_queue->next = new_queue;  
+            new_queue->next = NULL;                       
+        } 		
+	}   
+}
+
+//______________________________________________________________________________
+void Insert_Priority_Queue_A_Star(Node *const child, Queue **frontier) 
+{  
+    Queue *temp_queue;  
+    Queue *new_queue = (Queue*)malloc(sizeof(Queue));
+    if(new_queue==NULL)
+        Warning_Memory_Allocation(); 
+        
+	new_queue->node = child;
+	 
+    if(Empty(*frontier)){
+        new_queue->next = NULL;                 
+	 	*frontier = new_queue; 
+    }
+	else{ // If frontier is not empty, find appropriate element according to ordered evaluation function values. 
+	    if(child->path_cost + child->state.h_n < (*frontier)->node->path_cost + (*frontier)->node->state.h_n) { // Child has the lowest cost evaluation function value
+	        new_queue->next = *frontier;
+            *frontier = new_queue; 
+        }
+        else{
+            for(temp_queue = *frontier; temp_queue->next != NULL; temp_queue = temp_queue->next){
+                if(child->path_cost + child->state.h_n < temp_queue->next->node->path_cost + temp_queue->next->node->state.h_n){ 
+                     new_queue->next = temp_queue->next;   
+                     temp_queue->next = new_queue;
+                     return;
+                }                                              
+            } //If child has the highest evaluation function value
+            temp_queue->next = new_queue;  
+            new_queue->next = NULL;                       
+        } 		
+	}      
+}
+
+//______________________________________________________________________________
+void Insert_Priority_Queue_GENERALIZED_A_Star(Node *const child, Queue **frontier, float alpha) 
+{  
+    // UPDATE THIS FUNCTION FOR HE GENERALIZED A* ALGORITHM
+    
+    return;
+}
+//______________________________________________________________________________
+void Print_Frontier(Queue *const frontier)
+{
+	Queue *temp_queue; 
+	
+	printf("\nQUEUE: [ ");
+	for(temp_queue = frontier; temp_queue!= NULL; temp_queue = temp_queue->next){
+		Print_Node(temp_queue->node);
+		if(temp_queue->next!= NULL)
+		printf(" ,");
+	}
+	printf(" ]\n");   			
+}
+
+//_______________ Remove the node old_child from the frontier__________
+void Remove_Node_From_Frontier(Node *const old_child, Queue **const frontier) 
+{  
+    Queue *curr_queue, *prev_queue;  
+ 
+	for(curr_queue = *frontier; curr_queue!= NULL; curr_queue = curr_queue->next){
+		if(curr_queue->node == old_child){
+	    	//Remove the old child
+	    	if(curr_queue==*frontier)  // for the first node
+	    	   	*frontier = curr_queue->next;
+			else
+				prev_queue->next = curr_queue->next; 
+		}
+		prev_queue = curr_queue;		
+	}
+}
+
+//______________________________________________________________________________
+Node* Frontier_search(Queue *const frontier, const State *const state)
+{
+	Queue *temp_queue; 
+		
+	for(temp_queue = frontier; temp_queue!= NULL; temp_queue = temp_queue->next){
+		if(Compare_States(&(temp_queue->node->state), state))
+			return temp_queue->node;
+	}
+	return NULL;   			
+}
+
+//______________________________________________________________________________
+int Frontier_update(Queue *const frontier, const State *const state)
+{
+	Queue *temp_queue; 
+		
+	for(temp_queue = frontier; temp_queue!= NULL; temp_queue = temp_queue->next){
+		if(Compare_States(&(temp_queue->node->state), state))
+			return TRUE;
+	}
+	return FALSE;   			
+}
+
+//______________________________________________________________________________
+void Print_Node(const Node *const node)
+{
+	if(node!=NULL){
+		printf("NODE(");
+		Print_State(&(node->state));
+		if(node->parent){
+			printf(", parent:");
+			Print_State(&(node->parent->state));
+			printf(", action:");
+			Print_Action(node->action);	
+			printf(", path_cost: %.1f )", node->path_cost);	
+		}
+		else
+			printf(":root)");
+	}
+	else
+	   printf("NODE:NULL"); 	
+}
+
+//______________________________________________________________________________
+void Show_Solution_Path(Node *const goal)
+{   
+    Node *temp;
+	if(goal==FAILURE)
+		printf("THE SOLUTION CAN NOT BE FOUND.\n");
+	else{
+		printf("\nTHE COST PATH IS %.2f.\n", goal->path_cost);
+		printf("\nTHE SOLUTION PATH IS:\n");
+		for(temp = goal; temp!= NULL; temp = temp->parent)
+		{
+			Print_State(&(temp->state));
+			if(temp->parent!= NULL){
+				printf("\n\taction(");
+                Print_Action(temp->action);
+                printf(")\n");
+            }			
+		}
+	}		
+}
+
+//______________________________________________________________________________
+int Level_of_Node(Node *const node)
+{
+    int counter = 0;
+    Node *temp = node;
+    while(temp->parent!=NULL){
+        temp = temp->parent;
+        counter++;                     
+    }
+    return counter;
+}
+
+//______________________________________________________________________________
+void Clear_All_Branch(Node *node, int *Number_Allocated_Nodes)
+{
+    Node *parent = node->parent;
+    if(Level_of_Node(node)==0)
+    	return;
+    	
+    Clear_Single_Branch(node, Number_Allocated_Nodes);
+    
+    if(parent->Number_of_Child==0) // Clear nodes having no child. 
+    	Clear_All_Branch(parent, Number_Allocated_Nodes);
+}
+
+void Clear_Single_Branch(Node *node, int *Number_Allocated_Nodes)
+{
+    if(Level_of_Node(node)==0)
+    	return;
+	
+	printf("\nCLEARING: ");
+	Print_Node(node);
+	printf("\n"); 
+	node->parent->Number_of_Child--;	  
+    free(node);
+    (*Number_Allocated_Nodes)--; 
+}
+
+//______________________________________________________________________________
+void Warning_Memory_Allocation()
+{
+    printf("The memory Error in alloacation process! Press a key to exit.\n");
+    exit(-1);
+}
+
+//______________________________________________________________________________
+int Compare_States(const State *const state1, const State *const state2)
+{
+	unsigned char key1[MAX_KEY_SIZE], key2[MAX_KEY_SIZE];
+	Generate_HashTable_Key(state1, key1);
+	Generate_HashTable_Key(state2, key2);	
+	return !strcmp(key1, key2); 
+}
