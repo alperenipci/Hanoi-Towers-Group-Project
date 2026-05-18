@@ -1,10 +1,9 @@
-/* 
-    These functions are standard for graph search algorithms and you do not need to
+/* These functions are standard for graph search algorithms and you do not need to
     change them for different search problems.
     
     However, if you insert the generalized A* algorithm, 
-	        you should update First_InsertFrontier_Search_TREE()
-			              and Insert_Priority_Queue_GENERALIZED_A_Star(),  which is similar to Insert_Priority_Queue_A_Star()    
+        you should update First_InsertFrontier_Search_TREE()
+              and Insert_Priority_Queue_GENERALIZED_A_Star(),  which is similar to Insert_Priority_Queue_A_Star()    
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,10 +25,10 @@ Node* First_InsertFrontier_Search_TREE(const enum METHODS method, Node *const ro
 	
 	// a priority queue ordered by PATH-COST(or evaluation function f), with node as the only element		  
     frontier = Start_Frontier(root);  
-	Print_Frontier(frontier); 	
+	// Print_Frontier(frontier); 	
     
     explorer_set =  New_Hash_Table(HASH_TABLE_BASED_SIZE);
-	Show_Hash_Table(explorer_set);
+	// Show_Hash_Table(explorer_set);
 	
     while(Number_Searched_Nodes<MAX_SEARCHED_NODE) 
     {
@@ -49,7 +48,7 @@ Node* First_InsertFrontier_Search_TREE(const enum METHODS method, Node *const ro
 		}
 		
 		ht_insert(explorer_set, &(node->state));       
-		Show_Hash_Table(explorer_set);
+		// Show_Hash_Table(explorer_set);
 			                                
         for(action=0; action<ACTION_COUNT; action++)
         {
@@ -99,7 +98,7 @@ Node* First_InsertFrontier_Search_TREE(const enum METHODS method, Node *const ro
 					Delete_Hash_Table(explorer_set);  
                         exit(-1);      	   
                 }
-				Print_Frontier(frontier); 	
+				// Print_Frontier(frontier); 	
 			}	            
 		}
     }
@@ -130,10 +129,10 @@ Node* First_GoalTest_Search_TREE(const enum METHODS method, Node *const root, St
     }
 	
 	frontier = Start_Frontier(root);
-	Print_Frontier(frontier);
+	// Print_Frontier(frontier);
 	
 	explorer_set =  New_Hash_Table(HASH_TABLE_BASED_SIZE);
-	Show_Hash_Table(explorer_set);
+	// Show_Hash_Table(explorer_set);
 	  
     while(Number_Searched_Nodes<MAX_SEARCHED_NODE) 
     {
@@ -143,7 +142,7 @@ Node* First_GoalTest_Search_TREE(const enum METHODS method, Node *const root, St
         node = Pop(&frontier);
          
 		ht_insert(explorer_set, &(node->state));       
-		Show_Hash_Table(explorer_set);
+		// Show_Hash_Table(explorer_set);
                                         
         for(action=0; action<ACTION_COUNT; action++)
 		{
@@ -178,7 +177,7 @@ Node* First_GoalTest_Search_TREE(const enum METHODS method, Node *const root, St
                         printf("ERROR: Unknown method in First_GoalTest_Search_TREE.\n");  
                         exit(-1);                  
                 }
-                Print_Frontier(frontier);		   
+                // Print_Frontier(frontier);		   
             } 	            
 		}
     } 
@@ -209,10 +208,10 @@ Node* DepthType_Search_TREE(const enum METHODS method, Node *const root, State *
     }
 	
 	frontier = Start_Frontier(root);
-	Print_Frontier(frontier);
+	// Print_Frontier(frontier);
 	
 	explorer_set =  New_Hash_Table(HASH_TABLE_BASED_SIZE);
-	Show_Hash_Table(explorer_set);
+	// Show_Hash_Table(explorer_set);
 	    
     while(Number_Searched_Nodes<MAX_SEARCHED_NODE) 
     {
@@ -222,7 +221,7 @@ Node* DepthType_Search_TREE(const enum METHODS method, Node *const root, State *
         node = Pop(&frontier);
         
         ht_insert(explorer_set, &(node->state));       
-		Show_Hash_Table(explorer_set);
+		// Show_Hash_Table(explorer_set);
 		
 		
 		if(method==DepthLimitedSearch || method==IterativeDeepeningSearch)
@@ -255,7 +254,7 @@ Node* DepthType_Search_TREE(const enum METHODS method, Node *const root, State *
 				    }
 
 				    Insert_LIFO(child, &frontier);
-				    Print_Frontier(frontier);
+				    // Print_Frontier(frontier);
 				}						   
             }
 
@@ -317,20 +316,20 @@ Node* Pop(Queue **frontier)
     Queue *temp_queue; 
      
 	if(!Empty(*frontier)){
-	 	 node = (*frontier)->node;
+	 	node = (*frontier)->node;
         temp_queue = *frontier; 	 
  	 	*frontier = (*frontier)->next;
  	 	free(temp_queue);
 	} 
  	 
-	printf("\nPOP: ");
-    Print_Node(node);
-    printf("\n");
+	// printf("\nPOP: ");
+    // Print_Node(node);
+    // printf("\n");
 
     return node; 
 }
 
-//... (file long, truncated for brevity)
+//______________________________________________________________________________
 void Insert_FIFO(Node *const child, Queue **frontier) 
 {  
     Queue *temp_queue;  
@@ -624,9 +623,9 @@ void Clear_Single_Branch(Node *node, int *Number_Allocated_Nodes)
     if(Level_of_Node(node)==0)
     	return;
 	
-	printf("\nCLEARING: ");
-	Print_Node(node);
-	printf("\n"); 
+	// printf("\nCLEARING: ");
+	// Print_Node(node);
+	// printf("\n"); 
 	node->parent->Number_of_Child--;	  
     free(node);
     (*Number_Allocated_Nodes)--; 
