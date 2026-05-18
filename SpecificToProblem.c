@@ -134,7 +134,7 @@ float Compute_Heuristic_Function(const State *const state, const State *const go
     int misplaced = 0;
     for(int i = 0; i < state->num_disks; i++){
         if(state->disk[i] != goal->disk[i])
-            misplaced++;
+            misplaced += (1 << i);
     }
     return (float)misplaced;
 }
